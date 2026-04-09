@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './LandingPage.css'
+import logoSupabase    from '../assets/logos/supabase.png'
+import logoNeon        from '../assets/logos/neon.png'
+import logoAwsRds      from '../assets/logos/aws-rds.png'
+import logoRender      from '../assets/logos/render.jpeg'
+import logoFlyio       from '../assets/logos/flyio.png'
+import logoDigitalOcean from '../assets/logos/digitalocean.gif'
+import logoPostgresql  from '../assets/logos/postgresql.jpeg'
 
 function useReveal() {
   useEffect(() => {
@@ -186,13 +193,13 @@ const PERSONAS = [
 ]
 
 const BELT_LOGOS = [
-  { name: 'Supabase',     src: '/logos/supabase.png'    },
-  { name: 'Neon',         src: '/logos/neon.png'        },
-  { name: 'AWS RDS',      src: '/logos/aws-rds.png'     },
-  { name: 'Render',       src: '/logos/render.jpeg'     },
-  { name: 'Fly.io',       src: '/logos/flyio.png'       },
-  { name: 'DigitalOcean', src: '/logos/digitalocean.gif'},
-  { name: 'PostgreSQL',   src: '/logos/postgresql.jpeg' },
+  { name: 'Supabase',     src: logoSupabase     },
+  { name: 'Neon',         src: logoNeon         },
+  { name: 'AWS RDS',      src: logoAwsRds       },
+  { name: 'Render',       src: logoRender       },
+  { name: 'Fly.io',       src: logoFlyio        },
+  { name: 'DigitalOcean', src: logoDigitalOcean },
+  { name: 'PostgreSQL',   src: logoPostgresql   },
 ]
 
 function WorksBelt() {

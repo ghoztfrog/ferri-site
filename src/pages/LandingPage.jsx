@@ -185,7 +185,15 @@ const PERSONAS = [
   },
 ]
 
-const BELT_ITEMS = ['Supabase', 'Neon', 'AWS RDS', 'Railway', 'Render', 'Fly.io', 'DigitalOcean', 'Any Postgres']
+const BELT_LOGOS = [
+  { name: 'Supabase',     src: '/logos/supabase.png'    },
+  { name: 'Neon',         src: '/logos/neon.png'        },
+  { name: 'AWS RDS',      src: '/logos/aws-rds.png'     },
+  { name: 'Render',       src: '/logos/render.jpeg'     },
+  { name: 'Fly.io',       src: '/logos/flyio.png'       },
+  { name: 'DigitalOcean', src: '/logos/digitalocean.gif'},
+  { name: 'PostgreSQL',   src: '/logos/postgresql.jpeg' },
+]
 
 function WorksBelt() {
   return (
@@ -193,8 +201,14 @@ function WorksBelt() {
       <p className="lp-works-label">Works with your Postgres</p>
       <div className="lp-belt" aria-hidden="true">
         <div className="lp-belt-track">
-          {[...BELT_ITEMS, ...BELT_ITEMS].map((name, i) => (
-            <span key={i} className="lp-belt-item">{name}</span>
+          {[...BELT_LOGOS, ...BELT_LOGOS].map((logo, i) => (
+            <span key={i} className="lp-belt-item">
+              <img
+                src={logo.src}
+                alt={logo.name}
+                className="lp-belt-logo"
+              />
+            </span>
           ))}
         </div>
       </div>

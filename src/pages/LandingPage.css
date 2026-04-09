@@ -807,15 +807,24 @@ html {
 .lp-belt-item {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: 9999px;
-  padding: 8px 20px;
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  padding: 10px 24px;
   white-space: nowrap;
-  font-family: 'Outfit', sans-serif;
   flex-shrink: 0;
+  min-width: 100px;
+}
+
+.lp-belt-logo {
+  display: block;
+  height: 28px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
 }
 
 /* ─────────────────────────────────────────────

@@ -164,6 +164,27 @@ function SchemaBlock() {
   )
 }
 
+const PERSONAS = [
+  {
+    frontLabel: 'Engineering leads',
+    frontText: "You know the auth code is a mess. You inherited it or you wrote it three years ago and it grew. A rewrite means a quarter of eng time on a project nobody wants to sponsor.",
+    backLabel: 'With Ferri',
+    backText: "Run Ferri in shadow mode alongside your existing auth. No rewrite. Migrate one resource at a time. The old logic stays until you're ready to switch.",
+  },
+  {
+    frontLabel: 'CTOs',
+    frontText: "The SOC 2 auditor is going to ask who has access to what. Right now the honest answer involves grep and a prayer.",
+    backLabel: 'With Ferri',
+    backText: "Every permission check is logged automatically from day one. Access reports are exportable and readable without engineering involvement. The audit trail exists before the audit.",
+  },
+  {
+    frontLabel: 'Heads of sales and CISOs',
+    frontText: "Your biggest prospect just sent a security questionnaire. You need a real answer to 'describe your access control model,' not a paragraph someone wrote in 10 minutes.",
+    backLabel: 'With Ferri',
+    backText: "Your access control model is defined in a versioned schema, enforced in your database, and provable with a single export. The answer writes itself.",
+  },
+]
+
 const BELT_ITEMS = ['Supabase', 'Neon', 'AWS RDS', 'Railway', 'Render', 'Fly.io', 'DigitalOcean', 'Any Postgres']
 
 function WorksBelt() {
@@ -187,6 +208,10 @@ export default function LandingPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [flippedCards, setFlippedCards] = useState([false, false, false])
+
+  const toggleCard = (i) =>
+    setFlippedCards((prev) => prev.map((v, idx) => (idx === i ? !v : v)))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -246,15 +271,15 @@ export default function LandingPage() {
             <div className="lp-diff-card lp-diff-old reveal">
               <div className="lp-diff-card-header">
                 <span className="lp-diff-dot lp-diff-dot-red" />
-                <span className="lp-diff-card-title">Everyone else</span>
+                <span className="lp-diff-card-title">The status quo</span>
               </div>
               <ul className="lp-diff-list">
                 {[
-                  'Deploy and maintain a separate authorization service',
-                  'Sync your data to an external tuple store',
-                  'Network hop on every permission check',
-                  'Stale permissions when sync lags',
-                  'Another service to monitor at 2am',
+                  'You run a separate authorization service alongside your app',
+                  'Permission data is synced to an external tuple store',
+                  'Every check is a network hop away from your data',
+                  'Sync lag means permissions can be stale for seconds or minutes',
+                  'Another service to deploy, monitor, and debug',
                 ].map((item) => (
                   <li key={item}>
                     <span className="lp-diff-prefix lp-diff-cross">✗</span>
@@ -294,21 +319,13 @@ export default function LandingPage() {
           <div className="lp-section-label reveal">Why not build it yourself?</div>
           <div className="lp-diy-grid">
             <div className="lp-diy-left reveal">
-              <h2 className="lp-diy-headline">You can. Most teams do.</h2>
+              <h2 className="lp-diy-headline">You can. And we'll help.</h2>
               <p className="lp-diy-para">
-                Then the engineer who built it leaves. The logic is scattered across three services. Nobody can answer a compliance question without searching the codebase.
+                Melange, the open-source compiler that powers Ferri, is MIT licensed and available today. It compiles OpenFGA schemas into PostgreSQL functions. The engine is the easy part.
               </p>
               <p className="lp-diy-para">
-                Ferri is built on Melange, an open-source authorization compiler that generates specialised PostgreSQL functions from a declarative schema. Your permission model is version-controlled, readable, and survives team changes.
+                The hard part is everything around it. Keeping an immutable audit trail. Generating compliance evidence your auditor can read. Making permissions visible to people who don't write SQL. Retaining institutional knowledge when the engineer who set it up leaves. That's what Ferri manages.
               </p>
-              <a
-                href="https://melange.sh/docs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="lp-diy-link"
-              >
-                Learn more about Melange →
-              </a>
             </div>
             <div className="lp-diy-right reveal">
               <SchemaBlock />
@@ -323,23 +340,28 @@ export default function LandingPage() {
         <div className="container">
           <div className="lp-section-label reveal">Who this is for</div>
           <div className="lp-personas-grid">
-            {[
-              {
-                label: 'Engineering leads',
-                body: "You know the auth code is a mess. You inherited it, or you wrote it three years ago and it grew. Rewriting it means a quarter of eng time and a project nobody wants to sponsor. You need something that slots in without a rewrite.",
-              },
-              {
-                label: 'CTOs',
-                body: "The SOC 2 auditor is going to ask who has access to what, and right now the honest answer involves grep and a prayer. You need an audit trail that exists before the audit, not one you build in a panic the week before.",
-              },
-              {
-                label: 'Heads of sales and CISOs',
-                body: "Your biggest prospect just sent a security questionnaire asking you to describe your access control model. You need a real answer, not a paragraph your engineer wrote in 10 minutes that you hope nobody follows up on.",
-              },
-            ].map((persona) => (
-              <div className="lp-persona-block reveal" key={persona.label}>
-                <div className="lp-persona-label">{persona.label}</div>
-                <p className="lp-persona-body">{persona.body}</p>
+            {PERSONAS.map((persona, i) => (
+              <div
+                className="lp-persona-card-wrapper reveal"
+                key={persona.frontLabel}
+                onClick={() => toggleCard(i)}
+                role="button"
+                aria-pressed={flippedCards[i]}
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && toggleCard(i)}
+              >
+                <div className={`lp-persona-card${flippedCards[i] ? ' lp-persona-card--flipped' : ''}`}>
+                  <div className="lp-persona-card-face lp-persona-card-front">
+                    <div className="lp-persona-label">{persona.frontLabel}</div>
+                    <p className="lp-persona-body">{persona.frontText}</p>
+                    <span className="lp-persona-tap-hint">Tap to flip</span>
+                  </div>
+                  <div className="lp-persona-card-face lp-persona-card-back">
+                    <div className="lp-persona-label lp-persona-label--back">{persona.backLabel}</div>
+                    <p className="lp-persona-body">{persona.backText}</p>
+                    <span className="lp-persona-tap-hint">Tap to flip</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -393,6 +415,19 @@ export default function LandingPage() {
               </pre>
             </div>
 
+            <div className="lp-how-step reveal">
+              <div className="lp-how-num">04</div>
+              <div className="lp-how-title">Hand off the maintenance</div>
+              <p className="lp-how-desc">Ferri manages the audit trail, generates compliance evidence, and keeps permissions visible to your whole team. You stop thinking about authorization.</p>
+              <pre className="lp-how-snippet">
+                <div className="code-line"><span className="ct">$ ferri status</span></div>
+                <div className="code-line"><span className="cc">{'Schema:     3 types, 8 relations'}</span></div>
+                <div className="code-line"><span className="cc">{'Checks:     14,203 today'}</span></div>
+                <div className="code-line"><span className="cc">{'Audit log:  active (365d retention)'}</span></div>
+                <div className="code-line"><span className="cc">{'Status:     healthy'}</span></div>
+              </pre>
+            </div>
+
           </div>
         </div>
       </section>
@@ -408,15 +443,15 @@ export default function LandingPage() {
             {[
               {
                 title: 'Audit logging',
-                body: 'Every permission check, grant, and denial logged automatically. Structured, queryable, retained.',
+                body: 'Every permission check, every grant, every denial — logged as a structured event with timestamp, user, resource, and decision. Queryable in seconds. Retained for 365 days by default. When your auditor asks who had access to a specific resource on a specific date, you have the answer before they finish the question.',
               },
               {
                 title: 'SOC 2 ready',
-                body: 'Access control evidence generated without engineering involvement. Stop scrambling when the audit window opens.',
+                body: 'Access control evidence is one of the most painful parts of a SOC 2 audit. Ferri generates the reports automatically — who has access to what, when permissions changed, and a full history of denied access attempts. No engineering time. No last-minute scramble.',
               },
               {
                 title: 'Access reports',
-                body: 'Who has access to what, right now. Exportable, timestamped, readable by anyone. No SQL required.',
+                body: 'Exportable, timestamped, human-readable. Filter by user, resource, team, or time range. Hand it to a CISO, an auditor, or a non-technical stakeholder. They can read it without asking an engineer to translate.',
               },
             ].map((item) => (
               <div className="lp-compliance-row reveal" key={item.title}>

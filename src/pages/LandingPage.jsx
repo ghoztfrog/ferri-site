@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import './LandingPage.css'
+import ferriLogo from '../assets/brand/ferri.png'
 import logoSupabase    from '../assets/logos/supabase.png'
 import logoNeon        from '../assets/logos/neon.png'
 import logoAwsRds      from '../assets/logos/aws-rds.png'
@@ -257,7 +257,10 @@ export default function LandingPage() {
       {/* ── NAV ── */}
       <nav className="lp-nav">
         <div className="container lp-nav-inner">
-          <span className="lp-nav-wordmark">ferri</span>
+          <a href="#" className="lp-nav-brand" aria-label="Ferri">
+            <img src={ferriLogo} alt="" className="lp-nav-logo" />
+            <span className="lp-nav-wordmark">ferri</span>
+          </a>
           <a href="#contact" className="lp-nav-cta">Talk to us</a>
         </div>
       </nav>
@@ -278,7 +281,7 @@ export default function LandingPage() {
           </p>
           <div className="lp-hero-actions reveal">
             <a href="#contact" className="lp-btn-primary">Talk to us</a>
-            <Link to="/demo" className="lp-btn-ghost">See the demo →</Link>
+            <a href="https://demo.ferri.sh" className="lp-btn-ghost">See the demo →</a>
           </div>
           <CodeBlock />
         </div>

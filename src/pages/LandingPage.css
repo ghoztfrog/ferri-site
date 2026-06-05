@@ -81,6 +81,18 @@ html {
   height: 60px;
 }
 
+.lp-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lp-nav-logo {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
 .lp-nav-wordmark {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
@@ -1001,6 +1013,15 @@ html {
 ───────────────────────────────────────────── */
 
 @media (max-width: 600px) {
+  .lp-nav-wordmark {
+    display: none;
+  }
+
+  .lp-nav-logo {
+    width: 30px;
+    height: 30px;
+  }
+
   .lp-hero {
     padding: var(--space-4xl) 0 var(--space-2xl);
   }

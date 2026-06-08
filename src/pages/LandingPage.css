@@ -512,42 +512,9 @@ html {
   margin-top: var(--space-xl);
 }
 
-/* ── Flip card ── */
+/* ── Persona card ── */
 
-.lp-persona-card-wrapper {
-  perspective: 1000px;
-  min-height: 280px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-
-.lp-persona-card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 280px;
-  transform-style: preserve-3d;
-  transition: transform 0.6s ease;
-}
-
-/* Desktop: hover triggers flip */
-@media (hover: hover) {
-  .lp-persona-card-wrapper:hover .lp-persona-card {
-    transform: rotateY(180deg);
-  }
-}
-
-/* State-based flip (mobile tap) */
-.lp-persona-card--flipped {
-  transform: rotateY(180deg);
-}
-
-.lp-persona-card-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+.lp-persona {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
@@ -555,12 +522,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-}
-
-.lp-persona-card-back {
-  transform: rotateY(180deg);
-  background: color-mix(in srgb, var(--color-surface) 97%, #22c55e 3%);
-  border-color: rgba(34, 197, 94, 0.2);
+  height: 100%;
 }
 
 .lp-persona-label {
@@ -571,30 +533,12 @@ html {
   font-family: 'Outfit', sans-serif;
 }
 
-.lp-persona-label--back {
-  color: var(--color-accent);
-}
-
 .lp-persona-body {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
   line-height: 1.7;
   margin: 0;
   flex: 1;
-}
-
-.lp-persona-tap-hint {
-  display: none;
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  font-family: 'Outfit', sans-serif;
-  margin-top: auto;
-}
-
-@media (hover: none) {
-  .lp-persona-tap-hint {
-    display: block;
-  }
 }
 
 /* ─────────────────────────────────────────────
@@ -650,6 +594,111 @@ html {
   overflow-x: auto;
   margin: 0;
   color: var(--color-text);
+}
+
+/* ─────────────────────────────────────────────
+   BOTH QUESTIONS FGA HAS TO ANSWER
+───────────────────────────────────────────── */
+
+.lp-fga-body {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0;
+}
+
+.lp-fga-code {
+  margin-top: var(--space-xl);
+}
+
+/* ─────────────────────────────────────────────
+   WORKS WITH YOUR POSTGRES
+───────────────────────────────────────────── */
+
+.lp-postgres-intro {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 0;
+}
+
+.lp-postgres-subhead {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: var(--space-2xl) 0 var(--space-lg);
+}
+
+.lp-postgres-para {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 0 0 var(--space-md);
+}
+
+.lp-postgres-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.18s ease;
+}
+
+.lp-postgres-link:hover {
+  opacity: 0.75;
+}
+
+.lp-callout {
+  max-width: 760px;
+  margin: var(--space-xl) 0 0;
+  padding: var(--space-lg) var(--space-xl);
+  border-left: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface) 97%, #22c55e 3%);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.lp-postgres-steps {
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 760px;
+  margin: 0;
+  padding: 0;
+}
+
+.lp-postgres-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: var(--space-2xl);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.lp-postgres-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.lp-postgres-step-title {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 /* ─────────────────────────────────────────────

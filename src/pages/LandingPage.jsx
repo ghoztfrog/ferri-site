@@ -171,24 +171,61 @@ function SchemaBlock() {
   )
 }
 
+function QueriesBlock() {
+  return (
+    <div className="lp-code-block lp-fga-code reveal">
+      <div className="lp-code-topbar">
+        <div className="lp-code-dots">
+          <span className="dot dot-red" />
+          <span className="dot dot-yellow" />
+          <span className="dot dot-green" />
+        </div>
+        <span className="lp-code-filename">queries.sql</span>
+      </div>
+      <pre className="lp-code-body">
+        <div className="code-line"><span className="cc">-- Check: is this allowed?</span></div>
+        <div className="code-line">
+          <span className="ck">SELECT</span><span> check_permission(</span>
+          <span className="cs">'user'</span><span>, </span>
+          <span className="cs">'alice'</span><span>, </span>
+          <span className="cs">'can_read'</span><span>, </span>
+          <span className="cs">'document'</span><span>, </span>
+          <span className="cs">'42'</span><span>);</span>
+        </div>
+        <div className="code-line"><span className="cc">-- returns 1</span></div>
+        <div className="code-line code-blank" />
+        <div className="code-line"><span className="cc">-- List: what can they access?</span></div>
+        <div className="code-line"><span className="ck">SELECT</span><span> d.*</span></div>
+        <div className="code-line"><span className="ck">FROM</span><span> documents d</span></div>
+        <div className="code-line">
+          <span className="ck">JOIN</span><span> list_accessible_objects(</span>
+          <span className="cs">'user'</span><span>, </span>
+          <span className="cs">'alice'</span><span>, </span>
+          <span className="cs">'can_read'</span><span>, </span>
+          <span className="cs">'document'</span><span>, </span>
+          <span className="ck">NULL</span><span>, </span>
+          <span className="ck">NULL</span><span>) a</span>
+        </div>
+        <div className="code-line">
+          <span>{'  '}</span><span className="ck">ON</span><span> d.id::text = a.object_id;</span>
+        </div>
+      </pre>
+    </div>
+  )
+}
+
 const PERSONAS = [
   {
-    frontLabel: 'Engineering leads',
-    frontText: "You know the auth code is a mess. You inherited it or you wrote it three years ago and it grew. A rewrite means a quarter of eng time on a project nobody wants to sponsor.",
-    backLabel: 'With Ferri',
-    backText: "Run Ferri in shadow mode alongside your existing auth. No rewrite. Migrate one resource at a time. The old logic stays until you're ready to switch.",
+    label: 'Engineering leads',
+    body: 'Your authorization logic has outgrown role checks scattered across the codebase. Ferri runs in shadow mode beside your existing logic, so you migrate one resource type at a time with no rewrite and no cutover.',
   },
   {
-    frontLabel: 'CTOs',
-    frontText: "The SOC 2 auditor is going to ask who has access to what. Right now the honest answer involves grep and a prayer.",
-    backLabel: 'With Ferri',
-    backText: "Every permission check is logged automatically from day one. Access reports are exportable and readable without engineering involvement. The audit trail exists before the audit.",
+    label: 'CTOs and security leads',
+    body: 'A SOC 2 audit requires evidence of who can access what, and when that changed. Ferri logs every check as a structured event from day one and exports access reports without engineering involvement.',
   },
   {
-    frontLabel: 'Heads of sales and CISOs',
-    frontText: "Your biggest prospect just sent a security questionnaire. You need a real answer to 'describe your access control model,' not a paragraph someone wrote in 10 minutes.",
-    backLabel: 'With Ferri',
-    backText: "Your access control model is defined in a versioned schema, enforced in your database, and provable with a single export. The answer writes itself.",
+    label: 'Commercial and CISO stakeholders',
+    body: "Enterprise security reviews ask you to describe your access control model. Ferri's model is a versioned schema, enforced in your database, and provable with a single export.",
   },
 ]
 
@@ -229,10 +266,6 @@ export default function LandingPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [flippedCards, setFlippedCards] = useState([false, false, false])
-
-  const toggleCard = (i) =>
-    setFlippedCards((prev) => prev.map((v, idx) => (idx === i ? !v : v)))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -274,10 +307,10 @@ export default function LandingPage() {
             Authorization infrastructure
           </div>
           <h1 className="lp-hero-headline reveal">
-            Authorization that lives<br />in your database
+            Authorization that runs<br />inside your database
           </h1>
           <p className="lp-hero-subhead reveal">
-            Ferri compiles fine-grained permissions into SQL functions that run inside your existing Postgres. No separate service. No data sync. Every check logged.
+            Ferri compiles a relationship-based authorization model into PostgreSQL functions that execute directly in your existing database. No separate authorization service. No tuple store to sync. Every check recorded as a structured event.
           </p>
           <div className="lp-hero-actions reveal">
             <a href="#contact" className="lp-btn-primary">Talk to us</a>
@@ -295,15 +328,15 @@ export default function LandingPage() {
             <div className="lp-diff-card lp-diff-old reveal">
               <div className="lp-diff-card-header">
                 <span className="lp-diff-dot lp-diff-dot-red" />
-                <span className="lp-diff-card-title">The status quo</span>
+                <span className="lp-diff-card-title">The conventional approach</span>
               </div>
               <ul className="lp-diff-list">
                 {[
-                  'You run a separate authorization service alongside your app',
-                  'Permission data is synced to an external tuple store',
-                  'Every check is a network hop away from your data',
-                  'Sync lag means permissions can be stale for seconds or minutes',
-                  'Another service to deploy, monitor, and debug',
+                  'A dedicated authorization service runs alongside your application',
+                  'Relationship data is replicated into an external tuple store',
+                  'Every permission check is a network round-trip away from your data',
+                  'Replication lag means checks can evaluate against stale state',
+                  'Another service to deploy, scale, and keep highly available',
                 ].map((item) => (
                   <li key={item}>
                     <span className="lp-diff-prefix lp-diff-cross">✗</span>
@@ -320,11 +353,11 @@ export default function LandingPage() {
               </div>
               <ul className="lp-diff-list">
                 {[
-                  'SQL functions inside your existing Postgres',
-                  'Queries your tables directly — nothing to sync',
-                  'Sub-millisecond checks, no network overhead',
-                  'Always consistent with your live data',
-                  'Every check logged from day one',
+                  'Permission logic compiled to SQL functions in your existing Postgres',
+                  'Checks read your tables directly, with no tuple store and nothing to replicate',
+                  'Single in-database query, no network hop',
+                  'Transaction-aware, so checks are always consistent with your live data',
+                  'Every check logged as a structured event from the first deploy',
                 ].map((item) => (
                   <li key={item}>
                     <span className="lp-diff-prefix lp-diff-check">✓</span>
@@ -343,12 +376,12 @@ export default function LandingPage() {
           <div className="lp-section-label reveal">Why not build it yourself?</div>
           <div className="lp-diy-grid">
             <div className="lp-diy-left reveal">
-              <h2 className="lp-diy-headline">You can. And we'll help.</h2>
+              <h2 className="lp-diy-headline">The engine is open source. The operational surface is the work.</h2>
               <p className="lp-diy-para">
-                Melange, the open-source compiler that powers Ferri, is MIT licensed and available today. It compiles OpenFGA schemas into PostgreSQL functions. The engine is the easy part.
+                Melange, the compiler that powers Ferri, is MIT licensed and available today. It compiles an OpenFGA-compatible schema into PostgreSQL functions.
               </p>
               <p className="lp-diy-para">
-                The hard part is everything around it. Keeping an immutable audit trail. Generating compliance evidence your auditor can read. Making permissions visible to people who don't write SQL. Retaining institutional knowledge when the engineer who set it up leaves. That's what Ferri manages.
+                What it does not give you is the layer a production deployment needs. An immutable, queryable audit trail. Access reports an auditor can read without involving engineering. Visibility for stakeholders who do not write SQL. Continuity when the person who modelled your permissions moves on. That layer is Ferri.
               </p>
             </div>
             <div className="lp-diy-right reveal">
@@ -364,28 +397,10 @@ export default function LandingPage() {
         <div className="container">
           <div className="lp-section-label reveal">Who this is for</div>
           <div className="lp-personas-grid">
-            {PERSONAS.map((persona, i) => (
-              <div
-                className="lp-persona-card-wrapper reveal"
-                key={persona.frontLabel}
-                onClick={() => toggleCard(i)}
-                role="button"
-                aria-pressed={flippedCards[i]}
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && toggleCard(i)}
-              >
-                <div className={`lp-persona-card${flippedCards[i] ? ' lp-persona-card--flipped' : ''}`}>
-                  <div className="lp-persona-card-face lp-persona-card-front">
-                    <div className="lp-persona-label">{persona.frontLabel}</div>
-                    <p className="lp-persona-body">{persona.frontText}</p>
-                    <span className="lp-persona-tap-hint">Tap to flip</span>
-                  </div>
-                  <div className="lp-persona-card-face lp-persona-card-back">
-                    <div className="lp-persona-label lp-persona-label--back">{persona.backLabel}</div>
-                    <p className="lp-persona-body">{persona.backText}</p>
-                    <span className="lp-persona-tap-hint">Tap to flip</span>
-                  </div>
-                </div>
+            {PERSONAS.map((persona) => (
+              <div className="lp-persona reveal" key={persona.label}>
+                <div className="lp-persona-label">{persona.label}</div>
+                <p className="lp-persona-body">{persona.body}</p>
               </div>
             ))}
           </div>
@@ -456,6 +471,68 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── BOTH QUESTIONS FGA HAS TO ANSWER ── */}
+      <section className="lp-section lp-fga">
+        <div className="container">
+          <h2 className="lp-section-headline reveal">Both questions FGA has to answer</h2>
+          <p className="lp-fga-body reveal">
+            Fine-grained authorization comes down to two queries. The check asks whether a user can perform an action on a resource. The list asks which resources a user can access. Ferri answers both as in-database functions.
+          </p>
+          <QueriesBlock />
+        </div>
+      </section>
+
+      {/* ── WORKS WITH YOUR POSTGRES ── */}
+      <section className="lp-section lp-postgres">
+        <div className="container">
+          <div className="lp-section-label reveal">Works with your Postgres</div>
+          <h2 className="lp-section-headline reveal">Works with your Postgres, hosted or self-managed</h2>
+          <p className="lp-postgres-intro reveal">
+            Ferri runs anywhere Postgres runs. A database you manage yourself or a hosted platform such as Supabase. Because the compiled functions live in your database, there is no provider to integrate against and no data leaving your environment.
+          </p>
+
+          <h3 className="lp-postgres-subhead reveal">Where RLS and RBAC stop</h3>
+          <p className="lp-postgres-para reveal">
+            If you build on Supabase, you already have two authorization tools. Role-Based Access Control assigns coarse roles such as anon and authenticated. Row Level Security attaches SQL policies to tables, which Postgres applies as a filter on every query. Both are excellent inside their range, and Ferri is designed to sit on top of them rather than replace them.
+          </p>
+          <p className="lp-postgres-para reveal">
+            The range runs out when access depends on relationships rather than ownership. RLS answers {'"this user owns this row"'} cleanly with user_id = auth.uid(). It answers {'"this user can read this document because they belong to a team that is assigned to the project the document lives in"'} only with nested subqueries that grow harder to read, index, and trust as the graph deepens. That relationship traversal is what the Zanzibar model, OpenFGA, and Ferri exist to express.
+          </p>
+          <p className="lp-postgres-para reveal">
+            Supabase{"'"}s own guidance points the same way. Its documentation notes that RLS policies{' '}
+            <a
+              href="https://supabase.com/docs/guides/api/securing-your-api"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lp-postgres-link"
+            >
+              may not always be adequate or sufficient
+            </a>
+            {' '}on their own, and common practice is to keep RLS for row ownership while handling complex authorization in a dedicated layer.
+          </p>
+
+          <div className="lp-callout reveal">
+            RLS keeps enforcing row ownership at the table. Ferri resolves the relationship graph through compiled functions in the same database. One Postgres connection, two complementary jobs.
+          </div>
+
+          <h3 className="lp-postgres-subhead reveal">Adopting Ferri</h3>
+          <ol className="lp-postgres-steps reveal">
+            <li>
+              <span className="lp-postgres-step-title">Define your model.</span> Write an OpenFGA-compatible schema describing your types and relations. It lives in your repository under version control.
+            </li>
+            <li>
+              <span className="lp-postgres-step-title">Compile into your database.</span> Run melange migrate against your connection string. Ferri installs one SQL function per relation. Nothing new to deploy.
+            </li>
+            <li>
+              <span className="lp-postgres-step-title">Run in shadow mode.</span> Call Ferri alongside your existing checks and log the comparison. Your current logic stays in control until you choose to switch.
+            </li>
+            <li>
+              <span className="lp-postgres-step-title">Migrate one resource type at a time.</span> Move resources across as you gain confidence. RLS and your existing checks keep running on everything you have not moved.
+            </li>
+          </ol>
+        </div>
+      </section>
+
       {/* ── BUILT FOR COMPLIANCE ── */}
       <section className="lp-section lp-compliance">
         <div className="container">
@@ -518,7 +595,7 @@ export default function LandingPage() {
             <div className="lp-melange-right">
               {[
                 { label: 'GitHub stars', value: '60+' },
-                { label: 'Latest release', value: 'v0.7.4' },
+                { label: 'Latest release', value: 'v0.8.2' },
                 { label: 'License', value: 'MIT' },
               ].map((stat) => (
                 <div className="lp-melange-stat" key={stat.label}>
